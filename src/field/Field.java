@@ -159,10 +159,10 @@ public class Field {
 		return true;
 	}
 
-	public boolean isValidTweak(Shape piece){
+	public boolean isValidTop(Shape piece){
 		Cell[] tempBlocks = piece.getBlocks();
 		for(Cell single : tempBlocks){
-			if(single.hasCollision(this) || single.isOutOfBoundaries(this) || single.getLocation().getX() == this.getWidth()-1)
+			if(single.hasCollision(this) || single.isOutOfBoundariesTop(this))
 				return false;
 		}
 		return true;
@@ -170,7 +170,7 @@ public class Field {
 
 	public boolean tooHigh(){
 		for(int c = 0; c < this.width; c++){
-			if (this.columnHeight(c)>=this.getHeight()/2)
+			if (/*this.columnHeight(c)>=this.getHeight()/2+1 || */this.columnHeight(c) > this.getHeight()-4)
 				return true;
 		}
 		return false;

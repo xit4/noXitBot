@@ -51,7 +51,7 @@ public class BotState {
 
 	public BotState() {
 		this.round = 0;
-		this.players = new HashMap<String, Player>();
+		this.players = new HashMap<>();
 	}
 	
 	public void updateSettings(String key, String value) {
@@ -119,7 +119,11 @@ public class BotState {
 				return entry.getValue();
 		return null;
 	}
-	
+
+	public int getMyCombo()  {
+		return this.myBot.getCombo();
+	}
+
 	public Field getMyField() {
 		return this.myBot.getField();
 	}
