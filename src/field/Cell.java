@@ -59,8 +59,10 @@ public class Cell {
 
 	public boolean hasCollision(Field f) {
 		Cell cell = f.getCell(this.location.x, this.location.y);
+		if(cell == null)
+			return false;
 
-		return cell == null && (this.state == CellType.SHAPE && (cell.isSolid() || cell.isBlock()));
+		return (this.state == CellType.SHAPE && (cell.isSolid() || cell.isBlock()));
 	}
 	
 	public void setShape() {this.state = CellType.SHAPE;}

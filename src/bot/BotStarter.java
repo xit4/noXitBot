@@ -53,12 +53,10 @@ public class BotStarter {
 
 		ArrayList<MoveType> bestMoves;
 /*		if(state.getMyField().tooHigh())
-*/
+
 			bestMoves = getGreedyMoves(state,timeout);
-/*		else*/
-/*
+		else*/
 			bestMoves = getBuildingMoves(state,timeout);
-*/
 		bestMoves.add(MoveType.DROP);
 		return bestMoves;
 
@@ -162,9 +160,27 @@ public class BotStarter {
 					Field _grid = grid.clone();
 					_grid.addPiece(_setPiece);
 
-					score = -heightWeight * _grid.aggregateHeight() + linesWeight * (myCombo==0 ?  _grid.lines() : myCombo+_grid.lines()) - holesWeight * _grid.holes() - bumpinessWeight * _grid.bumpiness();
+					score = (_grid.getHeight()-_setPiece.getLocation().getY()-_setPiece.getSize()/2) * -4.500158825082766
+								+ _grid.lines() * 3.4181268101392694
+								+ _grid.getRowTransitions() * -3.2178882868487753
+								+ _grid.getColumnTransitions() * -9.348695305445199
+								+ _grid.getHoles() * -7.899265427351652
+								+ _grid.getWellSums() * -3.3855972247263626;
+
+
 
 					if (score > bestScore || bestScore == 0.0) {
+/*					System.out.println(
+								"bestscore:"+score+
+										" left:"+left+
+										" rotation:"+rotation+
+										" landing:"+ _setPiece.getLocation().getY()+
+										" lines:"+_grid.lines() * 3.4181268101392694+
+										" getRowTransitions:"+_grid.getRowTransitions() * -3.2178882868487753+
+										" getColumnTransitions:"+_grid.getColumnTransitions() * -9.348695305445199+
+										" getHoles:"+_grid.getHoles() * -7.899265427351652+
+										" getWellSums:"+_grid.getWellSums()* -3.3855972247263626
+						);*/
 						bestScore = score;
 						bestLeft = left;
 						bestRotation = rotation;

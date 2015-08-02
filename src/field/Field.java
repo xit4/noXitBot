@@ -86,7 +86,7 @@ public class Field {
 	private int columnHeight(int column){
 		int r = 0;
 		for(; r < this.height && (this.grid[column][r].isEmpty()||this.grid[column][r].isShape()); r++);
-		return this.height - r-1;
+		return this.height - r;
 	}
 
 	public int aggregateHeight(){
@@ -198,5 +198,109 @@ public class Field {
 	
 	public int getWidth() {
 		return this.width;
+	}
+
+
+	public int getRowTransitions() {
+		int transitions = 0;
+		Cell last = new Cell();
+
+
+		for(int r = 0; r < this.height; r++){
+			if(this.grid[0][r].isEmpty())
+				last.setEmpty();
+			else
+				last.setBlock();
+			for(int c = 0; c < this.width; c++){
+				if(this.grid[c][r].isSolid() || this.grid[c][r].isShape())
+					break;
+				if (this.grid[c][r].isEmpty() != last.isEmpty() ) {
+					transitions++;
+					if (last.isEmpty())
+						last.setBlock();
+					else
+						last.setEmpty();
+				}
+				if(c==this.width-1 && this.grid[c][r].isBlock())
+					transitions++;
+			}
+		}
+		return transitions;
+	}
+
+	public int getColumnTransitions() {
+		int transitions = 0;
+		Cell last = new Cell();
+
+
+		for(int c = 0; c < this.width; c++){
+			last.setEmpty();
+			for(int r = 0; r < this.height; r++){
+				if(this.grid[c][r].isSolid())
+					break;
+				if(this.grid[c][r].isShape())
+					continue;
+				if (this.grid[c][r].isEmpty() != last.isEmpty() ) {
+					transitions++;
+					if (last.isEmpty())
+						last.setBlock();
+					else
+						last.setEmpty();
+				}
+			}
+		}
+
+		return transitions;
+	}
+
+	public int getHoles() {
+		int count = 0;
+		for(int c = 0; c < this.width; c++){
+			boolean block = false;
+			for(int r = 0; r < this.height; r++){
+				if (this.grid[c][r].isBlock()) {
+					block = true;
+				}else if (this.grid[c][r].isEmpty() && block){
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public int getWellSums() {
+		int well_sums = 0;
+
+		for(int r = 0; r < this.height; r++){
+			for(int c = 1; c < this.width-1; c++){
+				if(this.grid[c][r].isEmpty() && this.grid[c-1][r].isBlock() && this.grid[c+1][r].isBlock()) {
+					well_sums++;
+					for (int k = r+1; k<this.height; k++)
+						if(this.grid[c][k].isEmpty())
+							well_sums++;
+						else
+							break;
+				}
+			}
+		}
+		for(int r = 0; r < this.height; r++){
+			if(this.grid[0][r].isEmpty() && this.grid[1][r].isBlock()) {
+				well_sums++;
+				for (int k = r+1; k<this.height; k++)
+					if(this.grid[0][k].isEmpty())
+						well_sums++;
+			}
+		}
+
+		for(int r = 0; r < this.height; r++){
+			if(this.grid[this.width-1][r].isEmpty() && this.grid[this.width-2][r].isBlock()) {
+				well_sums++;
+				for (int k = r+1; k<this.height; k++)
+					if(this.grid[this.width-1][k].isEmpty())
+						well_sums++;
+			}
+		}
+
+		return well_sums;
 	}
 }
