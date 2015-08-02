@@ -128,13 +128,15 @@ public class BotStarter {
 		ArrayList<MoveType> bestMoves = new ArrayList<>();
 		int bestLeft=0,bestRotation=0;
 		double bestScore = 0.0;
-		int left;
+		int left,left2;
 		Field grid = state.getMyField();
 		ShapeType workingPiece = state.getCurrentShape();
+		ShapeType workingPiece2 = state.getNextShape();
 		int myCombo =state.getMyCombo();
 		Shape piece = new Shape(workingPiece,grid,state.getShapeLocation());
-/*		if(piece.getLocation().getY()<0)
-			piece.oneDown();*/
+		Shape piece2 = new Shape(workingPiece2,grid,state.getShapeLocation());
+
+
 		for(int rotation = 0; rotation < 4; rotation++){
 			left=0;
 			if(rotation !=0) {
@@ -160,30 +162,54 @@ public class BotStarter {
 					Field _grid = grid.clone();
 					_grid.addPiece(_setPiece);
 
-					score = (_grid.getHeight()-_setPiece.getLocation().getY()-_setPiece.getSize()/2) * -4.500158825082766
-								+ _grid.lines() * 3.4181268101392694
-								+ _grid.getRowTransitions() * -3.2178882868487753
-								+ _grid.getColumnTransitions() * -9.348695305445199
-								+ _grid.getHoles() * -7.899265427351652
-								+ _grid.getWellSums() * -3.3855972247263626;
+					for(int rotation2 = 0; rotation2 < 4; rotation2++){
+						left2=0;
+						if(rotation2 !=0) {
+							piece2.turnRight();
+						}
+
+						Shape _piece2 = piece2.clone();
+						while(_grid.canMoveLeft(_piece2)){
+							_piece2.oneLeft();
+							left2++;
+						}
+
+						while(_grid.isValid(_piece2)){
+							Shape _setPiece2 = _piece2.clone();
+
+							while(_grid.canMoveDown(_setPiece2)) {
+								_setPiece2.oneDown();
+							}
+
+							if(_grid.isValidTop(_setPiece2)) {
+								Field _grid2 = _grid.clone();
+								_grid2.addPiece(_setPiece);
+								_grid2.addPiece(_setPiece2);
 
 
+								score = _grid2.evaluate(_setPiece, myCombo);
 
-					if (score > bestScore || bestScore == 0.0) {
-/*					System.out.println(
-								"bestscore:"+score+
-										" left:"+left+
-										" rotation:"+rotation+
-										" landing:"+ _setPiece.getLocation().getY()+
-										" lines:"+_grid.lines() * 3.4181268101392694+
-										" getRowTransitions:"+_grid.getRowTransitions() * -3.2178882868487753+
-										" getColumnTransitions:"+_grid.getColumnTransitions() * -9.348695305445199+
-										" getHoles:"+_grid.getHoles() * -7.899265427351652+
-										" getWellSums:"+_grid.getWellSums()* -3.3855972247263626
-						);*/
-						bestScore = score;
-						bestLeft = left;
-						bestRotation = rotation;
+								/*System.out.println(
+										"bestscore:"+score+
+												" left:"+left+" left2:"+left2+
+												" rotation:"+rotation+" rotation2:"+rotation2+
+												" landing:"+ (_grid.getHeight()-_setPiece.getLocation().getY()-_setPiece.getSize()/2)+
+												" lines:"+_grid2.lines()+
+												" getRowTransitions:"+_grid2.getRowTransitions() +
+												" getColumnTransitions:"+_grid2.getColumnTransitions() +
+												" getHoles:"+_grid2.getHoles()+
+												" getWellSums:"+_grid2.getWellSums()
+								);*/
+								if (score > bestScore || bestScore == 0.0) {
+
+									bestScore = score;
+									bestLeft = left;
+									bestRotation = rotation;
+								}
+							}
+							left2--;
+							_piece2.oneRight();
+						}
 					}
 				}
 				left--;

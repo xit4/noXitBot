@@ -268,6 +268,20 @@ public class Field {
 		return count;
 	}
 
+	public double evaluate(Shape _setPiece, int myCombo){
+
+		double score;
+
+		score = (this.getHeight()-_setPiece.getLocation().getY()-_setPiece.getSize()/2) * -4.500158825082766
+				+ (this.lines()+myCombo) * 3.4181268101392694
+				+ this.getRowTransitions() * -3.2178882868487753
+				+ this.getColumnTransitions() * -9.348695305445199
+				+ this.getHoles() * -7.899265427351652
+				+ this.getWellSums() * -3.3855972247263626;
+
+		return score;
+	}
+
 	public int getWellSums() {
 		int well_sums = 0;
 
