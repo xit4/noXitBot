@@ -17,8 +17,6 @@
 
 package field;
 
-import field.Cell;
-
 /**
  * Field class
  * 
@@ -170,7 +168,7 @@ public class Field {
 
 	public boolean tooHigh(){
 		for(int c = 0; c < this.width; c++){
-			if (/*this.columnHeight(c)>=this.getHeight()/2+1 || */this.columnHeight(c) > this.getHeight()-4)
+			if (this.columnHeight(c) > this.getHeight() - 4)
 				return true;
 		}
 		return false;
@@ -273,7 +271,7 @@ public class Field {
 		double score;
 
 		score = (this.getHeight()-_setPiece.getLocation().getY()-_setPiece.getSize()/2) * -4.500158825082766
-				+ (this.lines()+myCombo) * 3.4181268101392694
+				+ this.lines() * myCombo * 4.4181268101392694
 				+ this.getRowTransitions() * -3.2178882868487753
 				+ this.getColumnTransitions() * -9.348695305445199
 				+ this.getHoles() * -7.899265427351652
