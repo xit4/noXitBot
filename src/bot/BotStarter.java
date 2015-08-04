@@ -94,9 +94,13 @@ public class BotStarter {
 
 	BestScore getBestScoreLookahead(Field grid, Shape piece, int combo, Shape nextPiece) {
 
-
 		BestScore bestScore = new BestScore();
-
+		/*todo: initializing score to negative fixes moves blocking the "entrance" blocks as best moves. This is a
+		* todo: temmporary fix and should be substituted by find a way to move the sample shape over blocking placed shapes
+		*
+		* todo: find a way to keep a combo streak going, maybe a buildup phase followed by a clearing phase
+		*/
+		bestScore.score = -1000;
 
 		 // For every rotation
 		for(int rotation = 0; rotation < 4; rotation++) {
@@ -125,25 +129,34 @@ public class BotStarter {
 				if(grid.isValidTop(_setPiece)) {
 
 					double score;
+					int totalPoints;
 
 					Field _grid = grid.clone();
 					_grid.addPiece(_setPiece);
 
 					// Compute the score for this composition
-					score = _grid.evaluate(_setPiece, combo);
+					//todo: remove *2
+					score = _grid.evaluate(_setPiece, combo * 2);
+
+					totalPoints = _grid.lines() + combo;
 
 					// If a next piece is provided compute the best score and moves for both pieces
 					if (nextPiece != null) {
 /*						if(_grid.tooHigh(6))
 							combo=2;*/
 						int removed = _grid.removeLines();
-						BestScore secondBest = getBestScoreLookahead(_grid, nextPiece, combo + removed, null);
+						Shape next = nextPiece.clone();
+						BestScore secondBest = getBestScoreLookahead(_grid, next, combo + removed, null);
 						score += secondBest.score;
-						/*System.out.println("score:" +score +" left:"+left +" rotation:"+rotation);*/
+						totalPoints += secondBest.points;
+/*
+						System.out.println("score:" +score +" left:"+left +" rotation:"+rotation);
+*/
 					}
 
+
 					// Save the new best score
-					if (score >= bestScore.score || bestScore.score == 0.0) {
+					if ((/*totalPoints >= bestScore.points &&*/ score >= bestScore.score) || bestScore.score == 0.0) {
 
 						bestScore.score = score;
 						bestScore.bestLeft = left;
@@ -166,11 +179,13 @@ public class BotStarter {
 		double score;
 		int bestLeft;
 		int bestRotation;
+		int points;
 
 		public void BestScore() {
 			this.score = 0.0;
 			this.bestLeft = 0;
 			this.bestRotation = 0;
+			this.points = 0;
 		}
 	}
 }

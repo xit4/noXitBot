@@ -17,11 +17,7 @@
 
 package field;
 
-import java.awt.Point;
-
-import field.Cell;
-import field.Field;
-import field.ShapeType;
+import java.awt.*;
 
 /**
  * Shape class
@@ -218,6 +214,8 @@ public class Shape {
 
 		Shape newShape = new Shape(this.type, this.field, new Point(this.location.x, this.location.y));
 		int counter = 0;
+
+		// in case the cloned shape was rotated, copy the cells to clone this change
 		for (int y = 0; y < size; y++)
 			for (int x = 0; x < size; x++) {
 				switch (this.shape[x][y].getState()) {

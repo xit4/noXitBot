@@ -60,7 +60,35 @@ public class Field {
 			}
 		}
 	}
-	
+
+	private String generateString() {
+		StringBuilder builder = new StringBuilder();
+
+		for (int i = 0; i < this.height; i++) {
+			for (int j = 0; j < this.width; j++) {
+				String value = "";
+				switch (this.grid[j][i].getState()) {
+					case EMPTY:
+						value = "0";
+						break;
+					case SHAPE:
+						value = "1";
+						break;
+					case SOLID:
+						value = "3";
+						break;
+					case BLOCK:
+						value = "2";
+						break;
+				}
+				builder.append(value);
+				builder.append(",");
+			}
+			builder.append(";");
+		}
+		return builder.toString();
+	}
+
 	public Cell getCell(int x, int y) {
 		if(x < 0 || x >= this.width || y < 0 || y >= this.height)
 			return null;
@@ -186,7 +214,7 @@ public class Field {
 	}
 
 	public Field clone(){
-		return new Field(this.width,this.height,this.initialField);
+		return new Field(this.width, this.height, this.generateString());
 	}
 
 
