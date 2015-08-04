@@ -166,9 +166,9 @@ public class Field {
 		return true;
 	}
 
-	public boolean tooHigh(){
+	public boolean tooHigh(int limit) {
 		for(int c = 0; c < this.width; c++){
-			if (this.columnHeight(c) > this.getHeight() - 4)
+			if (this.columnHeight(c) > this.getHeight() - limit)
 				return true;
 		}
 		return false;
@@ -260,6 +260,29 @@ public class Field {
 					block = true;
 				}else if (this.grid[c][r].isEmpty() && block){
 					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public int removeLines() {
+		int count = 0;
+		for (int r = 0; r < this.height; r++) {
+			for (int c = 0; c < this.width; c++) {
+				if (!this.grid[c][r].isBlock())
+					break;
+				if (c == this.width - 1) {
+					count++;
+					Cell temp;
+					for (int k = 0; k < this.width; k++) {
+						this.grid[k][r].setEmpty();
+						for (int l = r - 1; l >= 0; l--) {
+							temp = this.grid[k][l + 1];
+							this.grid[k][l + 1] = this.grid[k][l];
+							this.grid[k][l] = temp;
+						}
+					}
 				}
 			}
 		}

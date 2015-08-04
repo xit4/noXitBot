@@ -134,12 +134,16 @@ public class BotStarter {
 
 					// If a next piece is provided compute the best score and moves for both pieces
 					if (nextPiece != null) {
-						BestScore secondBest = getBestScoreLookahead(_grid, nextPiece, combo + _grid.lines(), null);
+/*						if(_grid.tooHigh(6))
+							combo=2;*/
+						int removed = _grid.removeLines();
+						BestScore secondBest = getBestScoreLookahead(_grid, nextPiece, combo + removed, null);
 						score += secondBest.score;
+						/*System.out.println("score:" +score +" left:"+left +" rotation:"+rotation);*/
 					}
 
 					// Save the new best score
-					if (score > bestScore.score || bestScore.score == 0.0) {
+					if (score >= bestScore.score || bestScore.score == 0.0) {
 
 						bestScore.score = score;
 						bestScore.bestLeft = left;
